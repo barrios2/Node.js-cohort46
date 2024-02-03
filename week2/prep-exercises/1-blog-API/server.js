@@ -26,7 +26,7 @@ app.put('/posts/:title', (req, res) => {
       fs.writeFileSync(title, content);
       res.end('ok')
     } else {
-      res.end('Content or title is missing!')
+      res.end('Content or title required!')
     }
   } else {
     res.end('This post does not exist!');
@@ -55,14 +55,14 @@ app.get('/blogs/:title', (req, res) => {
     const post = fs.readFileSync(title);
     res.end(post);
   } else {
-    res.end('This post does not exist!');
+    res.end('This blog does not exist!');
   }
 })
 
 // BONUS: to read all blogs
 app.get('/blogs', (req, res) => {
   try {
-    const blogPosts = fs.readdirSync('./'); // synchronously reading contents in dir
+    const blogPosts = fs.readdirSync('./'); // reading contents in dir
     const blogTitles = blogPosts
       .filter((file) => fs.statSync(file).isFile() && file.includes(' ')) // filtering non-directory files
       .map((file) => file.replace(/ /, '_')); // replace spaces with underscores
