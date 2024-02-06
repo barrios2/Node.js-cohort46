@@ -15,21 +15,26 @@ app.get('/', (req, res) => {
 app.post('/weather', async (req, res) => {
   const { cityName } = req.body; // accessing cityName
 
-  if (!cityName) {
-    res.send('Please enter a city name');
-    res.end();
-  } else {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${keys.API_KEY}`); // includes temp in celsius
-    
-    if (response.ok) {
-      const data = await response.json();
-      const temperature = data.main.temp.toFixed() + '°C';
-      res.send({ weatherText: `The temperature in ${cityName} is ${temperature}` });
+  try {
+    if (!cityName) {
+      res.send('Please enter a city name');
       res.end();
     } else {
-      res.send({ weatherText: 'City is not found!' });
-      res.end();
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${keys.API_KEY}`); // includes temp in celsius
+      
+      if (response.ok) {
+        const data = await response.json();
+        const temperature = data.main.temp.toFixed() + '°C';
+        res.send({ weatherText: `The temperature in ${cityName} is ${temperature}` });
+        res.end();
+      } else {
+        res.send({ weatherText: 'City is not found!' });
+        res.end();
+      }
     }
+  } catch (error) {
+    res.status(500).send({ error: 'Internal Server Error' });
+    res.end();
   }
 });
 
