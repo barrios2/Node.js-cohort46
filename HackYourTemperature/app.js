@@ -16,7 +16,8 @@ app.post('/weather', async (req, res) => {
 
   try {
     if (!cityName) {
-      res.send('Please enter a city name');
+      res.status(400)
+      res.send({ error: 'Please enter a city name'});
     } else {
       const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
       const response = await fetch(`${WEATHER_BASE_URL}?units=metric&q=${cityName}&appid=${keys.API_KEY}`); // includes temp in celsius
@@ -26,7 +27,8 @@ app.post('/weather', async (req, res) => {
         const { main: { temp } } = data;
         res.send({ weatherText: `The temperature in ${cityName} is ${temp.toFixed()}°C` });
       } else {
-        res.send({ weatherText: 'City is not found!' });
+        res.status(400)
+        res.send({ error: 'Please enter a valid city name!' });
       }
     }
   } catch (error) {
